@@ -16,6 +16,7 @@ public:
 
 private:
     void initialize() override;
+    bool loop() override;
 };
 
 }// namespace app
