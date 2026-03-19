@@ -17,6 +17,9 @@ public:
 private:
     void initialize() override;
     bool loop() override;
+    void update() override;
+
+    void update_camera();
 };
 
 }// namespace app
