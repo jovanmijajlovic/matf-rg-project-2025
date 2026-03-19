@@ -1,6 +1,9 @@
 {
   "resources": {
     "models": {
+      "yugo-koral-45": {
+        "path": "yugo-koral-45/Yugo1.fbx"
+      }
     }
   },
   "window": {
