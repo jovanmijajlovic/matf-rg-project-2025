@@ -5,8 +5,10 @@
 #include "../include/MainController.hpp"
 
 #include <engine/graphics/GraphicsController.hpp>
+#include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
+#include <engine/resources/ResourcesController.hpp>
 #include <spdlog/spdlog.h>
 
 namespace app {
@@ -21,6 +23,7 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 }
 
 void MainController::initialize() {
+    engine::graphics::OpenGL::enable_depth_testing();
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
     spdlog::info("MainController initialized");
@@ -60,5 +63,32 @@ void MainController::update_camera() {
     auto mouse = platform->mouse();
     camera->rotate_camera(mouse.dx, mouse.dy);
     camera->zoom(mouse.scroll);
+}
+
+void MainController::begin_draw() {
+    engine::graphics::OpenGL::clear_buffers();
+}
+void MainController::draw() {
+    draw_yugo();
+}
+void MainController::end_draw() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    platform->swap_buffers();
+}
+
+void MainController::draw_yugo() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    engine::resources::Model *cube = resources->model("yugo-model");
+    engine::resources::Shader *shader = resources->shader("yugo");
+
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::scale(model, glm::vec3(0.3f));
+    shader->set_mat4("model", model);
+
+    cube->draw(shader);
 }
 }// namespace app
