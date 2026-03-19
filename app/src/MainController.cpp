@@ -69,17 +69,17 @@ void MainController::begin_draw() {
     engine::graphics::OpenGL::clear_buffers();
 }
 void MainController::draw() {
-    draw_yugo();
+    draw_blue_car();
 }
 void MainController::end_draw() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->swap_buffers();
 }
 
-void MainController::draw_yugo() {
+void MainController::draw_blue_car() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Model *cube = resources->model("yugo-model");
-    engine::resources::Shader *shader = resources->shader("yugo");
+    engine::resources::Model *cube = resources->model("blue-car");
+    engine::resources::Shader *shader = resources->shader("car-shader");
 
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     shader->use();

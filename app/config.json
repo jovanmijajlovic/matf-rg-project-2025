@@ -1,9 +1,9 @@
 {
   "resources": {
     "models": {
-      "yugo-model": {
-        "path": "yugo-model/yugo.obj",
-        "flip_uvs": false
+      "blue-car": {
+        "path": "blue-car/blue-car.obj",
+        "flip_uvs": true
       }
     }
   },

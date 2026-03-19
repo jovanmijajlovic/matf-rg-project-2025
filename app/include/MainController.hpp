@@ -23,7 +23,7 @@ private:
     void end_draw() override;
 
     void update_camera();
-    void draw_yugo();
+    void draw_blue_car();
 };
 
 }// namespace app
