@@ -60,6 +60,12 @@ void MainController::update_camera() {
     if (platform->key(engine::platform::KEY_D).is_down()) {
         camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
     }
+    if (platform->key(engine::platform::KEY_SPACE).is_down()) {
+        camera->move_camera(engine::graphics::Camera::Movement::UP, dt);
+    }
+    if (platform->key(engine::platform::KEY_LEFT_SHIFT).is_down()) {
+        camera->move_camera(engine::graphics::Camera::Movement::DOWN, dt);
+    }
     auto mouse = platform->mouse();
     camera->rotate_camera(mouse.dx, mouse.dy);
     camera->zoom(mouse.scroll);
