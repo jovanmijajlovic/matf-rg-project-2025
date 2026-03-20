@@ -12,6 +12,14 @@
       "taxi": {
         "path": "taxi/1399 Taxi.obj",
         "flip_uvs": true
+      },
+      "platform": {
+        "path": "platform/platform.obj",
+        "flip_uvs": false
+      },
+      "house": {
+        "path": "house/HouseWithDriveway.obj",
+        "flip_uvs": true
       }
     }
   },
