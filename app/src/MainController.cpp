@@ -75,19 +75,27 @@ void MainController::begin_draw() {
     engine::graphics::OpenGL::clear_buffers();
 }
 void MainController::draw() {
+    glm::mat4 rt_model = glm::mat4(1.0f);
+    draw_model("platform", "grass", rt_model);
+
+    glm::mat4 house_model = glm::mat4(1.0f);
+    house_model = glm::translate(house_model, glm::vec3(-5.0f, -5.0f, 0.0f));
+    house_model = glm::scale(house_model, glm::vec3(0.5f));
+    draw_model("house", "basic", house_model);
+
     glm::mat4 blue_model = glm::mat4(1.0f);
     blue_model = glm::translate(blue_model, glm::vec3(5.0f, 0.0f, 0.0f));
     blue_model = glm::scale(blue_model, glm::vec3(0.45f));
-    draw_car("blue-car", "car-shader", blue_model);
+    // draw_model("blue-car", "basic", blue_model);
 
     glm::mat4 lambo_model = glm::mat4(1.0f);
     lambo_model = glm::scale(lambo_model, glm::vec3(0.01f));
-    draw_car("lambo", "car-shader", lambo_model);
+    draw_model("lambo", "basic", lambo_model);
 
     glm::mat4 taxi_model = glm::mat4(1.0f);
     taxi_model = glm::translate(taxi_model, glm::vec3(10.0f, 0.0f, 0.0f));
     taxi_model = glm::scale(taxi_model, glm::vec3(0.05f));
-    draw_car("taxi", "car-shader", taxi_model);
+    // draw_model("taxi", "basic", taxi_model);
 }
 void MainController::end_draw() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
