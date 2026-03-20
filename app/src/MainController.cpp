@@ -83,6 +83,11 @@ void MainController::draw() {
     house_model = glm::scale(house_model, glm::vec3(0.5f));
     draw_model("house", "basic", house_model);
 
+    glm::mat4 house_model2 = glm::mat4(1.0f);
+    house_model2 = glm::translate(house_model2, glm::vec3(10.f, 0.0f, -14.0f));
+    house_model2 = glm::scale(house_model2, glm::vec3(0.3f));
+    draw_model("house", "basic", house_model2);
+
     glm::mat4 blue_model = glm::mat4(1.0f);
     blue_model = glm::translate(blue_model, glm::vec3(5.0f, 0.0f, 0.0f));
     blue_model = glm::scale(blue_model, glm::vec3(0.45f));
