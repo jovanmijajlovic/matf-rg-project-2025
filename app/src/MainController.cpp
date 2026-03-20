@@ -79,8 +79,8 @@ void MainController::draw() {
     draw_model("platform", "grass", rt_model);
 
     glm::mat4 house_model = glm::mat4(1.0f);
-    house_model = glm::translate(house_model, glm::vec3(-10.0f, 0.0f, -10.0f));
-    house_model = glm::scale(house_model, glm::vec3(0.5f));
+    house_model = glm::translate(house_model, glm::vec3(-10.0f, 0.0f, -14.0f));
+    house_model = glm::scale(house_model, glm::vec3(0.3f));
     draw_model("house", "basic", house_model);
 
     glm::mat4 house_model2 = glm::mat4(1.0f);
@@ -89,13 +89,13 @@ void MainController::draw() {
     draw_model("house", "basic", house_model2);
 
     glm::mat4 blue_model = glm::mat4(1.0f);
-    blue_model = glm::translate(blue_model, glm::vec3(5.0f, 0.0f, 0.0f));
-    blue_model = glm::scale(blue_model, glm::vec3(0.45f));
-    // draw_model("blue-car", "basic", blue_model);
+    blue_model = glm::translate(blue_model, glm::vec3(7.7f, 0.0f, -11.0f));
+    blue_model = glm::scale(blue_model, glm::vec3(0.28f));
+    draw_model("blue-car", "basic", blue_model);
 
     glm::mat4 lambo_model = glm::mat4(1.0f);
-    lambo_model = glm::translate(lambo_model, glm::vec3(-13.0f, 0.0f, -4.0f));
-    lambo_model = glm::scale(lambo_model, glm::vec3(0.0085f));
+    lambo_model = glm::translate(lambo_model, glm::vec3(-12.1f, 0.0f, -11.0f));
+    lambo_model = glm::scale(lambo_model, glm::vec3(0.006f));
     draw_model("lambo", "basic", lambo_model);
 
     glm::mat4 taxi_model = glm::mat4(1.0f);
