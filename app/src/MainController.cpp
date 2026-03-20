@@ -94,7 +94,7 @@ void MainController::end_draw() {
     platform->swap_buffers();
 }
 
-void MainController::draw_car(const std::string &model_name, const std::string &shader_name, const glm::mat4 &model_matrix) {
+void MainController::draw_model(const std::string &model_name, const std::string &shader_name, const glm::mat4 &model_matrix) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     engine::resources::Model *car = resources->model(model_name);
     engine::resources::Shader *shader = resources->shader(shader_name);
