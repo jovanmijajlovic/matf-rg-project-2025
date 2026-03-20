@@ -4,6 +4,14 @@
       "blue-car": {
         "path": "blue-car/blue-car.obj",
         "flip_uvs": true
+      },
+      "lambo": {
+        "path": "lambo/lambo.obj",
+        "flip_uvs": true
+      },
+      "taxi": {
+        "path": "taxi/1399 Taxi.obj",
+        "flip_uvs": true
       }
     }
   },
