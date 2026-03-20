@@ -75,26 +75,36 @@ void MainController::begin_draw() {
     engine::graphics::OpenGL::clear_buffers();
 }
 void MainController::draw() {
-    draw_blue_car();
+    glm::mat4 blue_model = glm::mat4(1.0f);
+    blue_model = glm::translate(blue_model, glm::vec3(5.0f, 0.0f, 0.0f));
+    blue_model = glm::scale(blue_model, glm::vec3(0.45f));
+    draw_car("blue-car", "car-shader", blue_model);
+
+    glm::mat4 lambo_model = glm::mat4(1.0f);
+    lambo_model = glm::scale(lambo_model, glm::vec3(0.01f));
+    draw_car("lambo", "car-shader", lambo_model);
+
+    glm::mat4 taxi_model = glm::mat4(1.0f);
+    taxi_model = glm::translate(taxi_model, glm::vec3(10.0f, 0.0f, 0.0f));
+    taxi_model = glm::scale(taxi_model, glm::vec3(0.05f));
+    draw_car("taxi", "car-shader", taxi_model);
 }
 void MainController::end_draw() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->swap_buffers();
 }
 
-void MainController::draw_blue_car() {
+void MainController::draw_car(const std::string &model_name, const std::string &shader_name, const glm::mat4 &model_matrix) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Model *cube = resources->model("blue-car");
-    engine::resources::Shader *shader = resources->shader("car-shader");
+    engine::resources::Model *car = resources->model(model_name);
+    engine::resources::Shader *shader = resources->shader(shader_name);
 
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::scale(model, glm::vec3(0.3f));
-    shader->set_mat4("model", model);
+    shader->set_mat4("model", model_matrix);
 
-    cube->draw(shader);
+    car->draw(shader);
 }
 }// namespace app
