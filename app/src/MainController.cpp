@@ -75,31 +75,51 @@ void MainController::begin_draw() {
     engine::graphics::OpenGL::clear_buffers();
 }
 void MainController::draw() {
+    //platform model
+
     glm::mat4 rt_model = glm::mat4(1.0f);
     draw_model("platform", "grass", rt_model);
+
+    //road model
 
     glm::mat4 road_model = glm::mat4(1.0f);
     road_model = glm::translate(road_model, glm::vec3(0.0f, 0.02f, 0.0f));
     draw_model("road", "grass", road_model);
 
+    //houses
+
     glm::mat4 house_model = glm::mat4(1.0f);
-    house_model = glm::translate(house_model, glm::vec3(-10.0f, 0.0f, -14.0f));
-    house_model = glm::scale(house_model, glm::vec3(0.3f));
+    house_model = glm::translate(house_model, glm::vec3(-10.0f, 0.0f, -11.7f));
+    house_model = glm::scale(house_model, glm::vec3(0.5f));
     draw_model("house", "basic", house_model);
 
     glm::mat4 house_model2 = glm::mat4(1.0f);
-    house_model2 = glm::translate(house_model2, glm::vec3(10.f, 0.0f, -14.0f));
-    house_model2 = glm::scale(house_model2, glm::vec3(0.3f));
+    house_model2 = glm::translate(house_model2, glm::vec3(10.f, 0.0f, -11.7f));
+    house_model2 = glm::scale(house_model2, glm::vec3(0.5f));
     draw_model("house", "basic", house_model2);
 
+    glm::mat4 house_model3 = glm::mat4(1.0f);
+    house_model3 = glm::translate(house_model3, glm::vec3(-10.f, 0.0f, 11.7f));
+    house_model3 = glm::rotate(house_model3, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    house_model3 = glm::scale(house_model3, glm::vec3(0.5f));
+    draw_model("house", "basic", house_model3);
+
+    glm::mat4 house_model4 = glm::mat4(1.0f);
+    house_model4 = glm::translate(house_model4, glm::vec3(10.f, 0.0f, 11.7f));
+    house_model4 = glm::rotate(house_model4, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    house_model4 = glm::scale(house_model4, glm::vec3(0.5f));
+    draw_model("house", "basic", house_model4);
+
+    //cars
+
     glm::mat4 blue_model = glm::mat4(1.0f);
-    blue_model = glm::translate(blue_model, glm::vec3(7.7f, 0.0f, -11.0f));
-    blue_model = glm::scale(blue_model, glm::vec3(0.28f));
+    blue_model = glm::translate(blue_model, glm::vec3(6.0f, 0.0f, -8.0f));
+    blue_model = glm::scale(blue_model, glm::vec3(0.4f));
     draw_model("blue-car", "basic", blue_model);
 
     glm::mat4 lambo_model = glm::mat4(1.0f);
-    lambo_model = glm::translate(lambo_model, glm::vec3(-12.1f, 0.0f, -11.0f));
-    lambo_model = glm::scale(lambo_model, glm::vec3(0.006f));
+    lambo_model = glm::translate(lambo_model, glm::vec3(-13.5f, 0.0f, -8.0f));
+    lambo_model = glm::scale(lambo_model, glm::vec3(0.01f));
     draw_model("lambo", "basic", lambo_model);
 
     glm::mat4 taxi_model = glm::mat4(1.0f);
