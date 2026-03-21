@@ -78,6 +78,10 @@ void MainController::draw() {
     glm::mat4 rt_model = glm::mat4(1.0f);
     draw_model("platform", "grass", rt_model);
 
+    glm::mat4 road_model = glm::mat4(1.0f);
+    road_model = glm::translate(road_model, glm::vec3(0.0f, 0.02f, 0.0f));
+    draw_model("road", "grass", road_model);
+
     glm::mat4 house_model = glm::mat4(1.0f);
     house_model = glm::translate(house_model, glm::vec3(-10.0f, 0.0f, -14.0f));
     house_model = glm::scale(house_model, glm::vec3(0.3f));
