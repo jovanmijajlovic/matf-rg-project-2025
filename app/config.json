@@ -20,6 +20,9 @@
       "house": {
         "path": "house/HouseWithDriveway.obj",
         "flip_uvs": true
+      },
+      "road": {
+        "path": "put/put.obj"
       }
     }
   },
