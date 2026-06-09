@@ -83,49 +83,54 @@ void MainController::draw() {
     //road model
 
     glm::mat4 road_model = glm::mat4(1.0f);
-    road_model = glm::translate(road_model, glm::vec3(0.0f, 0.02f, 0.0f));
+    road_model = glm::translate(road_model, glm::vec3(0.0f, 0.02f, 6.45f));
     draw_model("road", "grass", road_model);
+
+
+    glm::mat4 road_model_2 = glm::mat4(1.0f);
+    road_model_2 = glm::translate(road_model_2, glm::vec3(0.0f, 0.02f, 13.5f));
+    draw_model("road", "grass", road_model_2);
+
+
+    //streetlight
+
+    glm::mat4 streetlight_model = glm::mat4(1.0f);
+    streetlight_model = glm::translate(streetlight_model, glm::vec3(-13.0f, -0.6f, 11.75f));
+    streetlight_model = glm::rotate(streetlight_model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    streetlight_model = glm::scale(streetlight_model, glm::vec3(1.5f));
+    draw_model("streetlight", "basic", streetlight_model);
+
+    glm::mat4 streetlight_model_2 = glm::mat4(1.0f);
+    streetlight_model_2 = glm::translate(streetlight_model_2, glm::vec3(8.0f, -0.6f, 11.75f));
+    streetlight_model_2 = glm::rotate(streetlight_model_2, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    streetlight_model_2 = glm::scale(streetlight_model_2, glm::vec3(1.5f));
+    draw_model("streetlight", "basic", streetlight_model_2);
 
     //houses
 
     glm::mat4 house_model = glm::mat4(1.0f);
-    house_model = glm::translate(house_model, glm::vec3(-10.0f, 0.0f, -11.7f));
-    house_model = glm::scale(house_model, glm::vec3(0.5f));
+    house_model = glm::translate(house_model, glm::vec3(0.0f, 0.0f, -8.5f));
+    house_model = glm::scale(house_model, glm::vec3(0.7f));
     draw_model("house", "basic", house_model);
-
-    glm::mat4 house_model2 = glm::mat4(1.0f);
-    house_model2 = glm::translate(house_model2, glm::vec3(10.f, 0.0f, -11.7f));
-    house_model2 = glm::scale(house_model2, glm::vec3(0.5f));
-    draw_model("house", "basic", house_model2);
-
-    glm::mat4 house_model3 = glm::mat4(1.0f);
-    house_model3 = glm::translate(house_model3, glm::vec3(-10.f, 0.0f, 11.7f));
-    house_model3 = glm::rotate(house_model3, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    house_model3 = glm::scale(house_model3, glm::vec3(0.5f));
-    draw_model("house", "basic", house_model3);
-
-    glm::mat4 house_model4 = glm::mat4(1.0f);
-    house_model4 = glm::translate(house_model4, glm::vec3(10.f, 0.0f, 11.7f));
-    house_model4 = glm::rotate(house_model4, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    house_model4 = glm::scale(house_model4, glm::vec3(0.5f));
-    draw_model("house", "basic", house_model4);
 
     //cars
 
     glm::mat4 blue_model = glm::mat4(1.0f);
-    blue_model = glm::translate(blue_model, glm::vec3(6.0f, 0.0f, -8.0f));
-    blue_model = glm::scale(blue_model, glm::vec3(0.4f));
+    blue_model = glm::translate(blue_model, glm::vec3(16.5f, 0.0f, 6.0f));
+    blue_model = glm::rotate(blue_model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    blue_model = glm::scale(blue_model, glm::vec3(0.5f));
     draw_model("blue-car", "basic", blue_model);
 
     glm::mat4 lambo_model = glm::mat4(1.0f);
-    lambo_model = glm::translate(lambo_model, glm::vec3(-13.5f, 0.0f, -8.0f));
-    lambo_model = glm::scale(lambo_model, glm::vec3(0.01f));
+    lambo_model = glm::translate(lambo_model, glm::vec3(-4.86f, 0.0f, -1.95f));
+    lambo_model = glm::scale(lambo_model, glm::vec3(0.012f));
     draw_model("lambo", "basic", lambo_model);
 
     glm::mat4 taxi_model = glm::mat4(1.0f);
-    taxi_model = glm::translate(taxi_model, glm::vec3(10.0f, 0.0f, 0.0f));
-    taxi_model = glm::scale(taxi_model, glm::vec3(0.05f));
-    // draw_model("taxi", "basic", taxi_model);
+    taxi_model = glm::translate(taxi_model, glm::vec3(-15.0f, 0.07f, 14.0f));
+    taxi_model = glm::rotate(taxi_model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    taxi_model = glm::scale(taxi_model, glm::vec3(0.048f));
+    draw_model("taxi", "basic", taxi_model);
 }
 void MainController::end_draw() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
