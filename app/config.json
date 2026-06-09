@@ -23,6 +23,10 @@
       },
       "road": {
         "path": "put/put.obj"
+      },
+      "streetlight": {
+        "path": "streetlight/streetlight.obj",
+        "flip_uvs": true
       }
     }
   },
