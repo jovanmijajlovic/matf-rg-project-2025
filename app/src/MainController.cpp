@@ -192,12 +192,7 @@ void MainController::setup_lights(const std::string &shader_name, glm::vec3 pos1
     glm::vec3 cameraPos = glm::vec3(glm::inverse(view)[3]);
     shader->set_vec3("viewPos", cameraPos);
 
-    glm::vec3 positions[4] = { pos1, pos2, pos3, pos4
-        // glm::vec3(11.626f, -6.8787f, 8.0f),
-        // glm::vec3(11.279f, -6.8787f, 11.40f),
-        // glm::vec3(-9.649, -6.8787f, 11.4f),
-        // glm::vec3(-9.4287f, -6.8787f, 8.0f),
-    };
+    glm::vec3 positions[4] = { pos1, pos2, pos3, pos4 };
 
     for (int i = 0; i < 4; i++) {
         std::string base = "spotLights[" + std::to_string(i) + "].";

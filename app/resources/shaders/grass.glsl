@@ -94,5 +94,5 @@ void main()
     vec3 result = CalcDirLight(dirLight, norm, viewDir, tiledTexCoords);
     for(int i = 0; i < LIGHTS_NUM; i++)
     result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir, tiledTexCoords);
-    FragColor = vec4(result, 1.0); // bug ispravljen — koristi result
+    FragColor = vec4(result, 1.0);
 }
