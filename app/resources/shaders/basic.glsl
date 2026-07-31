@@ -70,7 +70,6 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
     vec3 diffuse = light.diffuse * diff * vec3(texture(texture_diffuse1, TexCoords));
     vec3 specular = light.specular * spec * material.specularColor;
     return (ambient + diffuse + specular);
-//    return (ambient + diffuse);
 }
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 texCoords){
@@ -90,7 +89,6 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec
     diffuse *= attenuation * intensity;
     specular *= attenuation * intensity;
     return (ambient + diffuse + specular);
-//    return (ambient + diffuse);
 }
 
 void main()
