@@ -41,6 +41,7 @@ bool MainController::loop() {
 void MainController::update() {
     update_camera();
     update_lights();
+    update_cars();
 }
 
 void MainController::update_camera() {
@@ -132,19 +133,31 @@ void MainController::draw() {
 
     //cars
 
-    glm::mat4 blue_model = glm::mat4(1.0f);
-    blue_model = glm::translate(blue_model, glm::vec3(16.5f, 0.0f, 6.0f));
-    blue_model = glm::rotate(blue_model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    blue_model = glm::scale(blue_model, glm::vec3(0.5f));
-    draw_model("blue-car", "basic", blue_model);
-
     glm::mat4 lambo_model = glm::mat4(1.0f);
     lambo_model = glm::translate(lambo_model, glm::vec3(-4.86f, 0.0f, -1.95f));
     lambo_model = glm::scale(lambo_model, glm::vec3(0.012f));
     draw_model("lambo", "basic", lambo_model);
 
+    float drive_progress = (m_drive_state == DriveState::DRIVING || m_drive_state == DriveState::STOPPED) ? m_state_timer : 0.0f;
+    const float N_SECONDS = 10.0f;
+    float t = glm::clamp(drive_progress / N_SECONDS, 0.0f, 1.0f);
+
+    glm::vec3 blue_start(16.5f, 0.0f, 6.0f);
+    glm::vec3 blue_end(-16.238f, 0.0f, 6.0f);
+    glm::vec3 blue_pos = glm::mix(blue_start, blue_end, t);
+
+    glm::mat4 blue_model = glm::mat4(1.0f);
+    blue_model = glm::translate(blue_model, blue_pos);
+    blue_model = glm::rotate(blue_model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    blue_model = glm::scale(blue_model, glm::vec3(0.5f));
+    draw_model("blue-car", "basic", blue_model);
+
+    glm::vec3 taxi_start(-15.0f, 0.07f, 14.0f);
+    glm::vec3 taxi_end(16.973f, 0.07f, 14.0f);
+    glm::vec3 taxi_pos = glm::mix(taxi_start, taxi_end, t);
+
     glm::mat4 taxi_model = glm::mat4(1.0f);
-    taxi_model = glm::translate(taxi_model, glm::vec3(-15.0f, 0.07f, 14.0f));
+    taxi_model = glm::translate(taxi_model, taxi_pos);
     taxi_model = glm::rotate(taxi_model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     taxi_model = glm::scale(taxi_model, glm::vec3(0.048f));
     draw_model("taxi", "basic", taxi_model);
@@ -224,5 +237,31 @@ void MainController::update_lights() {
     }
 
     m_streetlight_intensity = glm::clamp(m_streetlight_intensity, 0.0f, 3.0f);
+}
+
+void MainController::update_cars() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    float dt = platform->dt();
+
+    const float M_SECONDS = 2.0f;
+    const float N_SECONDS = 10.0f;
+
+    bool action_down = platform->key(engine::platform::KEY_ENTER).is_down();
+    if (action_down && !m_prev_action_down && m_drive_state == DriveState::IDLE) {
+        m_drive_state = DriveState::WAITING;
+        m_state_timer = 0.0f;
+    }
+    m_prev_action_down = action_down;
+
+    m_state_timer += dt;
+
+    if (m_drive_state == DriveState::WAITING && m_state_timer >= M_SECONDS) {
+        m_drive_state = DriveState::DRIVING;
+        m_state_timer = 0.0f;
+    }
+    else if (m_drive_state == DriveState::DRIVING && m_state_timer >= N_SECONDS) {
+        m_drive_state = DriveState::STOPPED;
+        m_state_timer = N_SECONDS;
+    }
 }
 }// namespace app

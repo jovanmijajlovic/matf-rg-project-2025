@@ -30,6 +30,19 @@ private:
 
     void update_lights();
     float m_streetlight_intensity = 1.0f;
+
+    enum class DriveState {
+        IDLE,
+        WAITING,
+        DRIVING,
+        STOPPED
+    };
+
+    DriveState m_drive_state = DriveState::IDLE;
+    float m_state_timer = 0.0f;
+    bool m_prev_action_down = false;
+
+    void update_cars();
 };
 
 }// namespace app
