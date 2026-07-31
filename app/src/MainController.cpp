@@ -75,6 +75,11 @@ void MainController::begin_draw() {
     engine::graphics::OpenGL::clear_buffers();
 }
 void MainController::draw() {
+    //lights setup
+
+    setup_dir_light("basic");
+    setup_dir_light("grass");
+
     //platform model
 
     glm::mat4 rt_model = glm::mat4(1.0f);
@@ -105,6 +110,17 @@ void MainController::draw() {
     streetlight_model_2 = glm::rotate(streetlight_model_2, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     streetlight_model_2 = glm::scale(streetlight_model_2, glm::vec3(1.5f));
     draw_model("streetlight", "basic", streetlight_model_2);
+
+    glm::vec3 bulb_offset_1(3.3672f, 4.5883f, 0.0166f);
+    glm::vec3 bulb_offset_2(1.6576f, 4.4826f, 1.4452f);
+
+    glm::vec3 lamp1_bulb1 = glm::vec3(streetlight_model   * glm::vec4(bulb_offset_1, 1.0f));
+    glm::vec3 lamp1_bulb2 = glm::vec3(streetlight_model   * glm::vec4(bulb_offset_2, 1.0f));
+    glm::vec3 lamp2_bulb1 = glm::vec3(streetlight_model_2 * glm::vec4(bulb_offset_1, 1.0f));
+    glm::vec3 lamp2_bulb2 = glm::vec3(streetlight_model_2 * glm::vec4(bulb_offset_2, 1.0f));
+
+    setup_lights("basic", lamp1_bulb1, lamp1_bulb2, lamp2_bulb1, lamp2_bulb2);
+    setup_lights("grass", lamp1_bulb1, lamp1_bulb2, lamp2_bulb1, lamp2_bulb2);
 
     //houses
 
@@ -148,6 +164,53 @@ void MainController::draw_model(const std::string &model_name, const std::string
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("model", model_matrix);
 
+    shader->set_float("material.shininess", 32.0f);
+    shader->set_vec3("material.specularColor", glm::vec3(0.5));
+
     car->draw(shader);
+}
+
+void MainController::setup_dir_light(const std::string &shader_name) {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    engine::resources::Shader *shader = resources->shader(shader_name);
+    shader->use();
+
+    shader->set_vec3("dirLight.direction", glm::vec3(0.3f, -1.0f, 0.2f));
+    shader->set_vec3("dirLight.ambient",   glm::vec3(0.15f, 0.15f, 0.17f));
+    shader->set_vec3("dirLight.diffuse",   glm::vec3(0.6f, 0.6f, 0.6f));
+    shader->set_vec3("dirLight.specular",  glm::vec3(0.3f, 0.3f, 0.3f));
+}
+
+void MainController::setup_lights(const std::string &shader_name, glm::vec3 pos1, glm::vec3 pos2, glm::vec3 pos3, glm::vec3 pos4) {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    engine::resources::Shader *shader = resources->shader(shader_name);
+
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    shader->use();
+
+    glm::mat4 view = graphics->camera()->view_matrix();
+    glm::vec3 cameraPos = glm::vec3(glm::inverse(view)[3]);
+    shader->set_vec3("viewPos", cameraPos);
+
+    glm::vec3 positions[4] = { pos1, pos2, pos3, pos4
+        // glm::vec3(11.626f, -6.8787f, 8.0f),
+        // glm::vec3(11.279f, -6.8787f, 11.40f),
+        // glm::vec3(-9.649, -6.8787f, 11.4f),
+        // glm::vec3(-9.4287f, -6.8787f, 8.0f),
+    };
+
+    for (int i = 0; i < 4; i++) {
+        std::string base = "spotLights[" + std::to_string(i) + "].";
+        shader->set_vec3(base + "position", positions[i]);
+        shader->set_vec3(base + "direction",    glm::vec3(0.0f, -1.0f, 0.0f));
+        shader->set_vec3(base + "ambient",      glm::vec3(0.0f));
+        shader->set_vec3(base + "diffuse",      glm::vec3(1.0f, 0.9f, 0.7f));
+        shader->set_vec3(base + "specular",     glm::vec3(1.0f));
+        shader->set_float(base + "cutOff",      glm::cos(glm::radians(25.0f)));
+        shader->set_float(base + "outerCutOff", glm::cos(glm::radians(35.0f)));
+        shader->set_float(base + "constant",    1.0f);
+        shader->set_float(base + "linear",      0.09f);
+        shader->set_float(base + "quadratic",   0.032f);
+    }
 }
 }// namespace app
