@@ -9,6 +9,7 @@
 #include <engine/core/Controller.hpp>
 #include <engine/graphics/Camera.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
+#include <engine/graphics/Bloom.hpp>
 
 struct ImGuiContext;
 
@@ -153,6 +154,10 @@ public:
         return m_ortho_params;
     }
 
+    Bloom *bloom() {
+        return &m_bloom;
+    }
+
 private:
     /**
     * @brief Initializes OpenGL, ImGUI, and projection matrix params;
@@ -166,6 +171,7 @@ private:
 
     glm::mat4 m_projection_matrix{};
     Camera m_camera{};
+    Bloom m_bloom{};
     ImGuiContext *m_imgui_context{};
 };
 
