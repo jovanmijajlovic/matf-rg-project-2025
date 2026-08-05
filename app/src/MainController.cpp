@@ -33,6 +33,14 @@ void MainController::initialize() {
 
     m_bulb_cube.emplace(0.05f);
 
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto camera = graphics->camera();
+    camera->Position = glm::vec3(-2.5f, 3.0f, 25.0f);
+    camera->Yaw = -90.0f;
+    camera->Pitch = 0.0f;
+    camera->rotate_camera(0.0f, 0.0f);
+    camera->MovementSpeed = 6.0f;
+
     spdlog::info("MainController initialized");
 }
 
