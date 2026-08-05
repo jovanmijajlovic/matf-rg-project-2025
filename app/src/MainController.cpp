@@ -11,6 +11,10 @@
 #include <engine/resources/ResourcesController.hpp>
 #include <spdlog/spdlog.h>
 
+// clang-format off
+#include <imgui_impl_opengl3_loader.h>
+// clang-format on
+
 namespace app {
 
 class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
@@ -26,6 +30,9 @@ void MainController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
+
+    m_bulb_cube.emplace(0.05f);
+
     spdlog::info("MainController initialized");
 }
 
@@ -74,7 +81,8 @@ void MainController::update_camera() {
 }
 
 void MainController::begin_draw() {
-    engine::graphics::OpenGL::clear_buffers();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    graphics->bloom()->begin_scene_capture();
 }
 void MainController::draw() {
     //lights setup
@@ -124,6 +132,14 @@ void MainController::draw() {
     setup_lights("basic", lamp1_bulb1, lamp1_bulb2, lamp2_bulb1, lamp2_bulb2);
     setup_lights("grass", lamp1_bulb1, lamp1_bulb2, lamp2_bulb1, lamp2_bulb2);
 
+    glm::vec3 bulb_color = glm::vec3(15.0f, 13.0f, 8.0f) * m_streetlight_intensity;
+    glm::vec3 bulb_visual_offset(0.0f, -0.078f, 0.0f);
+
+    draw_bulb(lamp1_bulb1 + bulb_visual_offset, bulb_color);
+    draw_bulb(lamp1_bulb2 + bulb_visual_offset, bulb_color);
+    draw_bulb(lamp2_bulb1 + bulb_visual_offset, bulb_color);
+    draw_bulb(lamp2_bulb2 + bulb_visual_offset, bulb_color);
+
     //houses
 
     glm::mat4 house_model = glm::mat4(1.0f);
@@ -161,6 +177,11 @@ void MainController::draw() {
     taxi_model = glm::rotate(taxi_model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     taxi_model = glm::scale(taxi_model, glm::vec3(0.048f));
     draw_model("taxi", "basic", taxi_model);
+
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    graphics->bloom()->end_scene_capture();
+
+    render_bloom_final();
 }
 void MainController::end_draw() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
@@ -263,5 +284,36 @@ void MainController::update_cars() {
         m_drive_state = DriveState::STOPPED;
         m_state_timer = N_SECONDS;
     }
+}
+
+void MainController::draw_bulb(const glm::vec3 &position, const glm::vec3 &color) {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    engine::resources::Shader *shader = resources->shader("bulb");
+
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = glm::scale(model, glm::vec3(1.6f, 0.3f, 6.0f));
+    shader->set_mat4("model", model);
+    shader->set_vec3("bulbColor", color);
+
+    m_bulb_cube->draw();
+}
+
+void MainController::render_bloom_final() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    engine::resources::Shader *blur_shader = resources->shader("blur");
+    graphics->bloom()->blur_bright_texture(blur_shader, 10);
+
+    engine::graphics::OpenGL::clear_buffers();
+
+    engine::resources::Shader *final_shader = resources->shader("bloom_final");
+    graphics->bloom()->render_final(final_shader, true, 0.8f);
 }
 }// namespace app

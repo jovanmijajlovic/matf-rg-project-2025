@@ -4,8 +4,11 @@
 
 #ifndef MATF_RG_PROJECT_MAINCONTROLLER_HPP
 #define MATF_RG_PROJECT_MAINCONTROLLER_HPP
+#include <cstdint>
 #include <engine/core/Controller.hpp>
 #include <glm/fwd.hpp>
+#include <engine/graphics/Cube.hpp>
+#include <optional>
 
 namespace app {
 
@@ -43,6 +46,10 @@ private:
     bool m_prev_action_down = false;
 
     void update_cars();
+
+    std::optional<engine::graphics::Cube> m_bulb_cube;
+    void draw_bulb(const glm::vec3 &position, const glm::vec3 &color);
+    void render_bloom_final();
 };
 
 }// namespace app
