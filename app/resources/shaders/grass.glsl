@@ -79,7 +79,7 @@ float ShadowCalculation(vec3 fragPos, vec3 lightPos)
     return currentDepth - bias > closestDepth ? 1.0 : 0.0;
 }
 
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 texCoords) {
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 texCoords, bool castsShadow) {
     vec3 lightDir = normalize(light.position - fragPos);
     float diff = max(dot(normal, lightDir), 0.0);
     vec3 reflectDir = reflect(-lightDir, normal);
@@ -93,7 +93,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec
     vec3 ambient = light.ambient * texColor;
     vec3 diffuse = light.diffuse * diff * texColor;
     vec3 specular = light.specular * spec;
-    float shadow = ShadowCalculation(fragPos, light.position);
+    float shadow = castsShadow ? ShadowCalculation(fragPos, light.position) : 0.0;
     ambient *= attenuation * intensity;
     diffuse *= attenuation * intensity * (1.0 - shadow);
     specular *= attenuation * intensity * (1.0 - shadow);
@@ -107,7 +107,7 @@ void main()
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 result = CalcDirLight(dirLight, norm, viewDir, tiledTexCoords);
     for(int i = 0; i < LIGHTS_NUM; i++)
-    result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir, tiledTexCoords);
+    result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir, tiledTexCoords, i == 0);
     FragColor = vec4(result, 1.0);
     float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
     if(brightness > 1.0)

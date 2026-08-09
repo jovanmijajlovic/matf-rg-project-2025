@@ -99,41 +99,20 @@ void MainController::begin_draw() {
     graphics->bloom()->begin_scene_capture();
 }
 void MainController::draw() {
-    //lights setup
-
     setup_dir_light("basic");
     setup_dir_light("grass");
 
-    //platform model
-
-    glm::mat4 rt_model = glm::mat4(1.0f);
-    draw_model("platform", "grass", rt_model);
-
-    //road model
-
-    glm::mat4 road_model = glm::mat4(1.0f);
-    road_model = glm::translate(road_model, glm::vec3(0.0f, 0.02f, 6.45f));
-    draw_model("road", "grass", road_model);
-
-
-    glm::mat4 road_model_2 = glm::mat4(1.0f);
-    road_model_2 = glm::translate(road_model_2, glm::vec3(0.0f, 0.02f, 13.5f));
-    draw_model("road", "grass", road_model_2);
-
-
-    //streetlight
+    // streetlights
 
     glm::mat4 streetlight_model = glm::mat4(1.0f);
     streetlight_model = glm::translate(streetlight_model, glm::vec3(-13.0f, -0.6f, 11.75f));
     streetlight_model = glm::rotate(streetlight_model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     streetlight_model = glm::scale(streetlight_model, glm::vec3(1.5f));
-    draw_model("streetlight", "basic", streetlight_model);
 
     glm::mat4 streetlight_model_2 = glm::mat4(1.0f);
     streetlight_model_2 = glm::translate(streetlight_model_2, glm::vec3(8.0f, -0.6f, 11.75f));
     streetlight_model_2 = glm::rotate(streetlight_model_2, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     streetlight_model_2 = glm::scale(streetlight_model_2, glm::vec3(1.5f));
-    draw_model("streetlight", "basic", streetlight_model_2);
 
     glm::vec3 bulb_offset_1(3.3672f, 4.5883f, 0.0166f);
     glm::vec3 bulb_offset_2(1.6576f, 4.4826f, 1.4452f);
@@ -146,15 +125,32 @@ void MainController::draw() {
     setup_lights("basic", lamp1_bulb1, lamp1_bulb2, lamp2_bulb1, lamp2_bulb2);
     setup_lights("grass", lamp1_bulb1, lamp1_bulb2, lamp2_bulb1, lamp2_bulb2);
 
+    draw_model("streetlight", "basic", streetlight_model);
+    draw_model("streetlight", "basic", streetlight_model_2);
+
     glm::vec3 bulb_color = glm::vec3(15.0f, 13.0f, 8.0f) * m_streetlight_intensity;
     glm::vec3 bulb_visual_offset(0.0f, -0.078f, 0.0f);
-
     draw_bulb(lamp1_bulb1 + bulb_visual_offset, bulb_color);
     draw_bulb(lamp1_bulb2 + bulb_visual_offset, bulb_color);
     draw_bulb(lamp2_bulb1 + bulb_visual_offset, bulb_color);
     draw_bulb(lamp2_bulb2 + bulb_visual_offset, bulb_color);
 
-    //houses
+    // platform
+
+    glm::mat4 rt_model = glm::mat4(1.0f);
+    draw_model("platform", "grass", rt_model);
+
+    // road
+
+    glm::mat4 road_model = glm::mat4(1.0f);
+    road_model = glm::translate(road_model, glm::vec3(0.0f, 0.02f, 6.45f));
+    draw_model("road", "grass", road_model);
+
+    glm::mat4 road_model_2 = glm::mat4(1.0f);
+    road_model_2 = glm::translate(road_model_2, glm::vec3(0.0f, 0.02f, 13.5f));
+    draw_model("road", "grass", road_model_2);
+
+    // house
 
     glm::mat4 house_model = glm::mat4(1.0f);
     house_model = glm::translate(house_model, glm::vec3(0.0f, 0.0f, -8.5f));
@@ -172,20 +168,14 @@ void MainController::draw() {
     const float N_SECONDS = 10.0f;
     float t = glm::clamp(drive_progress / N_SECONDS, 0.0f, 1.0f);
 
-    glm::vec3 blue_start(16.5f, 0.0f, 6.0f);
-    glm::vec3 blue_end(-16.238f, 0.0f, 6.0f);
-    glm::vec3 blue_pos = glm::mix(blue_start, blue_end, t);
-
+    glm::vec3 blue_pos = glm::mix(glm::vec3(16.5f, 0.0f, 6.0f), glm::vec3(-16.238f, 0.0f, 6.0f), t);
     glm::mat4 blue_model = glm::mat4(1.0f);
     blue_model = glm::translate(blue_model, blue_pos);
     blue_model = glm::rotate(blue_model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     blue_model = glm::scale(blue_model, glm::vec3(0.5f));
     draw_model("blue-car", "basic", blue_model);
 
-    glm::vec3 taxi_start(-15.0f, 0.07f, 14.0f);
-    glm::vec3 taxi_end(16.973f, 0.07f, 14.0f);
-    glm::vec3 taxi_pos = glm::mix(taxi_start, taxi_end, t);
-
+    glm::vec3 taxi_pos = glm::mix(glm::vec3(-15.0f, 0.07f, 14.0f), glm::vec3(16.973f, 0.07f, 14.0f), t);
     glm::mat4 taxi_model = glm::mat4(1.0f);
     taxi_model = glm::translate(taxi_model, taxi_pos);
     taxi_model = glm::rotate(taxi_model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
