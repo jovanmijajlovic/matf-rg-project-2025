@@ -43,6 +43,8 @@ void MainController::initialize() {
     camera->rotate_camera(0.0f, 0.0f);
     camera->MovementSpeed = 6.0f;
 
+    m_point_shadow.emplace(1024);
+
     spdlog::info("MainController initialized");
 }
 
@@ -91,6 +93,8 @@ void MainController::update_camera() {
 }
 
 void MainController::begin_draw() {
+    render_shadow_pass(get_shadow_light_pos());
+
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     graphics->bloom()->begin_scene_capture();
 }
@@ -252,6 +256,8 @@ void MainController::setup_lights(const std::string &shader_name, glm::vec3 pos1
         shader->set_float(base + "linear",      0.09f);
         shader->set_float(base + "quadratic",   0.032f);
     }
+
+    m_point_shadow->bind_shadow_map(shader, "shadowMap", 2);
 }
 
 void MainController::update_lights() {
@@ -325,5 +331,70 @@ void MainController::render_bloom_final() {
 
     engine::resources::Shader *final_shader = resources->shader("bloom_final");
     graphics->bloom()->render_final(final_shader, true, 0.8f);
+}
+
+void MainController::render_shadow_pass(const glm::vec3 &light_pos) {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    engine::resources::Shader *depth_shader = resources->shader("shadow_depth");
+
+    m_point_shadow->begin_depth_capture(depth_shader, light_pos, 1.0f, 30.0f);
+
+    auto draw_depth = [&](const std::string &model_name, const glm::mat4 &model_matrix) {
+        depth_shader->set_mat4("model", model_matrix);
+        auto model = resources->model(model_name);
+        model->draw(depth_shader);
+    };
+
+    glm::mat4 streetlight_model = glm::mat4(1.0f);
+    streetlight_model = glm::translate(streetlight_model, glm::vec3(-13.0f, -0.6f, 11.75f));
+    streetlight_model = glm::rotate(streetlight_model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    streetlight_model = glm::scale(streetlight_model, glm::vec3(1.5f));
+    draw_depth("streetlight", streetlight_model);
+
+    glm::mat4 streetlight_model_2 = glm::mat4(1.0f);
+    streetlight_model_2 = glm::translate(streetlight_model_2, glm::vec3(8.0f, -0.6f, 11.75f));
+    streetlight_model_2 = glm::rotate(streetlight_model_2, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    streetlight_model_2 = glm::scale(streetlight_model_2, glm::vec3(1.5f));
+    draw_depth("streetlight", streetlight_model_2);
+
+    glm::mat4 house_model = glm::mat4(1.0f);
+    house_model = glm::translate(house_model, glm::vec3(0.0f, 0.0f, -8.5f));
+    house_model = glm::scale(house_model, glm::vec3(0.7f));
+    draw_depth("house", house_model);
+
+    glm::mat4 lambo_model = glm::mat4(1.0f);
+    lambo_model = glm::translate(lambo_model, glm::vec3(-4.86f, 0.0f, -1.95f));
+    lambo_model = glm::scale(lambo_model, glm::vec3(0.012f));
+    draw_depth("lambo", lambo_model);
+
+    float drive_progress = (m_drive_state == DriveState::DRIVING || m_drive_state == DriveState::STOPPED) ? m_state_timer : 0.0f;
+    const float N_SECONDS = 10.0f;
+    float t = glm::clamp(drive_progress / N_SECONDS, 0.0f, 1.0f);
+
+    glm::vec3 blue_pos = glm::mix(glm::vec3(16.5f, 0.0f, 6.0f), glm::vec3(-16.238f, 0.0f, 6.0f), t);
+    glm::mat4 blue_model = glm::mat4(1.0f);
+    blue_model = glm::translate(blue_model, blue_pos);
+    blue_model = glm::rotate(blue_model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    blue_model = glm::scale(blue_model, glm::vec3(0.5f));
+    draw_depth("blue-car", blue_model);
+
+    glm::vec3 taxi_pos = glm::mix(glm::vec3(-15.0f, 0.07f, 14.0f), glm::vec3(16.973f, 0.07f, 14.0f), t);
+    glm::mat4 taxi_model = glm::mat4(1.0f);
+    taxi_model = glm::translate(taxi_model, taxi_pos);
+    taxi_model = glm::rotate(taxi_model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    taxi_model = glm::scale(taxi_model, glm::vec3(0.048f));
+    draw_depth("taxi", taxi_model);
+
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    m_point_shadow->end_depth_capture((int) graphics->perspective_params().Width, (int) graphics->perspective_params().Height);
+}
+glm::vec3 MainController::get_shadow_light_pos() const {
+    glm::mat4 streetlight_model = glm::mat4(1.0f);
+    streetlight_model = glm::translate(streetlight_model, glm::vec3(-13.0f, -0.6f, 11.75f));
+    streetlight_model = glm::rotate(streetlight_model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    streetlight_model = glm::scale(streetlight_model, glm::vec3(1.5f));
+
+    glm::vec3 bulb_offset_1(3.3672f, 4.5883f, 0.0166f);
+    return glm::vec3(streetlight_model * glm::vec4(bulb_offset_1, 1.0f));
 }
 }// namespace app

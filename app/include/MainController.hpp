@@ -6,8 +6,9 @@
 #define MATF_RG_PROJECT_MAINCONTROLLER_HPP
 #include <cstdint>
 #include <engine/core/Controller.hpp>
-#include <glm/fwd.hpp>
 #include <engine/graphics/Cube.hpp>
+#include <engine/graphics/PointShadow.hpp>
+#include <glm/fwd.hpp>
 #include <optional>
 
 namespace app {
@@ -50,6 +51,10 @@ private:
     std::optional<engine::graphics::Cube> m_bulb_cube;
     void draw_bulb(const glm::vec3 &position, const glm::vec3 &color);
     void render_bloom_final();
+
+    std::optional<engine::graphics::PointShadow> m_point_shadow;
+    void render_shadow_pass(const glm::vec3 &light_pos);
+    glm::vec3 get_shadow_light_pos() const;
 };
 
 }// namespace app
