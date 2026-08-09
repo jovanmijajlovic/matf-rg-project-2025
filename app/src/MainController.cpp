@@ -31,6 +31,8 @@ void MainController::initialize() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
 
+    platform->set_enable_cursor(false);
+
     m_bulb_cube.emplace(0.05f);
 
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
