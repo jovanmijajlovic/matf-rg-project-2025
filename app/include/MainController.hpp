@@ -45,6 +45,7 @@ private:
     DriveState m_drive_state = DriveState::IDLE;
     float m_state_timer = 0.0f;
     bool m_prev_action_down = false;
+    bool m_prev_reset_down = false;
 
     void update_cars();
 

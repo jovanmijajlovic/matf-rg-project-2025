@@ -289,6 +289,13 @@ void MainController::update_cars() {
     }
     m_prev_action_down = action_down;
 
+    bool reset_down = platform->key(engine::platform::KEY_R).is_down();
+    if (reset_down && !m_prev_reset_down) {
+        m_drive_state = DriveState::IDLE;
+        m_state_timer = 0.0f;
+    }
+    m_prev_reset_down = reset_down;
+
     m_state_timer += dt;
 
     if (m_drive_state == DriveState::WAITING && m_state_timer >= M_SECONDS) {
