@@ -60,7 +60,10 @@ uniform Material material;
 uniform vec3 viewPos;
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
-uniform samplerCube shadowMap;
+uniform samplerCube shadowMap0;
+uniform samplerCube shadowMap1;
+uniform samplerCube shadowMap2;
+uniform samplerCube shadowMap3;
 uniform float far_plane;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
@@ -75,17 +78,17 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
     return (ambient + diffuse + specular);
 }
 
-float ShadowCalculation(vec3 fragPos, vec3 lightPos)
+float ShadowCalculation(vec3 fragPos, vec3 lightPos, samplerCube map)
 {
     vec3 fragToLight = fragPos - lightPos;
-    float closestDepth = texture(shadowMap, fragToLight).r;
+    float closestDepth = texture(map, fragToLight).r;
     closestDepth *= far_plane;
     float currentDepth = length(fragToLight);
-    float bias = 0.05;
+    float bias = 0.15;
     return currentDepth - bias > closestDepth ? 1.0 : 0.0;
 }
 
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 texCoords, bool castsShadow){
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 texCoords, int idx){
     vec3 lightDir = normalize(light.position - fragPos);
     float diff = max(dot(normal, lightDir), 0.0);
     vec3 reflectDir = reflect(-lightDir, normal);
@@ -98,7 +101,11 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec
     vec3 ambient = light.ambient * vec3(texture(texture_diffuse1, texCoords));
     vec3 diffuse = light.diffuse * diff * vec3(texture(texture_diffuse1, texCoords));
     vec3 specular = light.specular * spec * material.specularColor;
-    float shadow = castsShadow ? ShadowCalculation(fragPos, light.position) : 0.0;
+    float shadow = 0.0;
+    if (idx == 0) shadow = ShadowCalculation(fragPos, light.position, shadowMap0);
+    else if (idx == 1) shadow = ShadowCalculation(fragPos, light.position, shadowMap1);
+    else if (idx == 2) shadow = ShadowCalculation(fragPos, light.position, shadowMap2);
+    else if (idx == 3) shadow = ShadowCalculation(fragPos, light.position, shadowMap3);
     ambient *= attenuation * intensity;
     diffuse *= attenuation * intensity * (1.0 - shadow);
     specular *= attenuation * intensity * (1.0 - shadow);
@@ -111,7 +118,7 @@ void main()
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
     for(int i = 0; i < LIGHTS_NUM; i++)
-    result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir, TexCoords, i == 0);
+    result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir, TexCoords, i);
     FragColor = vec4(result, 1.0);
     float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
     if(brightness > 1.0)

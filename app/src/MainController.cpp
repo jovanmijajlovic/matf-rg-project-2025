@@ -43,7 +43,10 @@ void MainController::initialize() {
     camera->rotate_camera(0.0f, 0.0f);
     camera->MovementSpeed = 6.0f;
 
-    m_point_shadow.emplace(1024);
+    m_point_shadow_lamp1_bulb1.emplace(1024);
+    m_point_shadow_lamp1_bulb2.emplace(1024);
+    m_point_shadow_lamp2_bulb1.emplace(1024);
+    m_point_shadow_lamp2_bulb2.emplace(1024);
 
     spdlog::info("MainController initialized");
 }
@@ -93,7 +96,10 @@ void MainController::update_camera() {
 }
 
 void MainController::begin_draw() {
-    render_shadow_pass(get_shadow_light_pos());
+    render_shadow_pass(*m_point_shadow_lamp1_bulb1, get_shadow_light_pos(1, 1));
+    render_shadow_pass(*m_point_shadow_lamp1_bulb2, get_shadow_light_pos(1, 2));
+    render_shadow_pass(*m_point_shadow_lamp2_bulb1, get_shadow_light_pos(2, 1));
+    render_shadow_pass(*m_point_shadow_lamp2_bulb2, get_shadow_light_pos(2, 2));
 
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     graphics->bloom()->begin_scene_capture();
@@ -247,7 +253,10 @@ void MainController::setup_lights(const std::string &shader_name, glm::vec3 pos1
         shader->set_float(base + "quadratic",   0.032f);
     }
 
-    m_point_shadow->bind_shadow_map(shader, "shadowMap", 2);
+    m_point_shadow_lamp1_bulb1->bind_shadow_map(shader, "shadowMap0", 2);
+    m_point_shadow_lamp1_bulb2->bind_shadow_map(shader, "shadowMap1", 3);
+    m_point_shadow_lamp2_bulb1->bind_shadow_map(shader, "shadowMap2", 4);
+    m_point_shadow_lamp2_bulb2->bind_shadow_map(shader, "shadowMap3", 5);
 }
 
 void MainController::update_lights() {
@@ -323,11 +332,11 @@ void MainController::render_bloom_final() {
     graphics->bloom()->render_final(final_shader, true, 0.8f);
 }
 
-void MainController::render_shadow_pass(const glm::vec3 &light_pos) {
+void MainController::render_shadow_pass(engine::graphics::PointShadow &shadow, const glm::vec3 &light_pos) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     engine::resources::Shader *depth_shader = resources->shader("shadow_depth");
 
-    m_point_shadow->begin_depth_capture(depth_shader, light_pos, 1.0f, 30.0f);
+    shadow.begin_depth_capture(depth_shader, light_pos, 1.0f, 30.0f);
 
     auto draw_depth = [&](const std::string &model_name, const glm::mat4 &model_matrix) {
         depth_shader->set_mat4("model", model_matrix);
@@ -376,15 +385,21 @@ void MainController::render_shadow_pass(const glm::vec3 &light_pos) {
     draw_depth("taxi", taxi_model);
 
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    m_point_shadow->end_depth_capture((int) graphics->perspective_params().Width, (int) graphics->perspective_params().Height);
+    shadow.end_depth_capture((int) graphics->perspective_params().Width, (int) graphics->perspective_params().Height);
 }
-glm::vec3 MainController::get_shadow_light_pos() const {
+
+glm::vec3 MainController::get_shadow_light_pos(int lamp_index, int bulb_index) const {
+    glm::vec3 base_pos = (lamp_index == 1) ? glm::vec3(-13.0f, -0.6f, 11.75f) : glm::vec3(8.0f, -0.6f, 11.75f);
+
     glm::mat4 streetlight_model = glm::mat4(1.0f);
-    streetlight_model = glm::translate(streetlight_model, glm::vec3(-13.0f, -0.6f, 11.75f));
+    streetlight_model = glm::translate(streetlight_model, base_pos);
     streetlight_model = glm::rotate(streetlight_model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     streetlight_model = glm::scale(streetlight_model, glm::vec3(1.5f));
 
     glm::vec3 bulb_offset_1(3.3672f, 4.5883f, 0.0166f);
-    return glm::vec3(streetlight_model * glm::vec4(bulb_offset_1, 1.0f));
+    glm::vec3 bulb_offset_2(1.6576f, 4.4826f, 1.4452f);
+    glm::vec3 offset = (bulb_index == 1) ? bulb_offset_1 : bulb_offset_2;
+
+    return glm::vec3(streetlight_model * glm::vec4(offset, 1.0f));
 }
 }// namespace app

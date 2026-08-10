@@ -52,9 +52,12 @@ private:
     void draw_bulb(const glm::vec3 &position, const glm::vec3 &color);
     void render_bloom_final();
 
-    std::optional<engine::graphics::PointShadow> m_point_shadow;
-    void render_shadow_pass(const glm::vec3 &light_pos);
-    glm::vec3 get_shadow_light_pos() const;
+    std::optional<engine::graphics::PointShadow> m_point_shadow_lamp1_bulb1;
+    std::optional<engine::graphics::PointShadow> m_point_shadow_lamp1_bulb2;
+    std::optional<engine::graphics::PointShadow> m_point_shadow_lamp2_bulb1;
+    std::optional<engine::graphics::PointShadow> m_point_shadow_lamp2_bulb2;
+    void render_shadow_pass(engine::graphics::PointShadow &shadow, const glm::vec3 &light_pos);
+    glm::vec3 get_shadow_light_pos(int lamp_index, int bulb_index) const;
 };
 
 }// namespace app
