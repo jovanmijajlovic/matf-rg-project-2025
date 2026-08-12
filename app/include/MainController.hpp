@@ -57,6 +57,7 @@ private:
     std::optional<engine::graphics::PointShadow> m_point_shadow_lamp1_bulb2;
     std::optional<engine::graphics::PointShadow> m_point_shadow_lamp2_bulb1;
     std::optional<engine::graphics::PointShadow> m_point_shadow_lamp2_bulb2;
+    void draw_depth(engine::resources::Shader *depth_shader, const std::string &model_name, const glm::mat4 &model_matrix);
     void render_shadow_pass(engine::graphics::PointShadow &shadow, const glm::vec3 &light_pos);
     glm::vec3 get_shadow_light_pos(int lamp_index, int bulb_index) const;
 };
