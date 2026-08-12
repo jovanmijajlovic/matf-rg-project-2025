@@ -3,6 +3,7 @@
 // clang-format on
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/graphics/PointShadow.hpp>
+#include <engine/graphics/GraphicsController.hpp>
 #include <engine/resources/Shader.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -59,9 +60,13 @@ void PointShadow::begin_depth_capture(const resources::Shader *depth_shader, con
     depth_shader->set_vec3("lightPos", light_pos);
 }
 
-void PointShadow::end_depth_capture(int screen_width, int screen_height) const {
+void PointShadow::end_depth_capture() const {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    int width = (int) graphics->perspective_params().Width;
+    int height = (int) graphics->perspective_params().Height;
+
     CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
-    CHECKED_GL_CALL(glViewport, 0, 0, screen_width, screen_height);
+    CHECKED_GL_CALL(glViewport, 0, 0, width, height);
 }
 
 void PointShadow::bind_shadow_map(const resources::Shader *shader, const std::string &uniform_name, int texture_unit) const {

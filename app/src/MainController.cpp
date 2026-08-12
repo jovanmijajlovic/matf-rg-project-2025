@@ -392,8 +392,7 @@ void MainController::render_shadow_pass(engine::graphics::PointShadow &shadow, c
     taxi_model = glm::scale(taxi_model, glm::vec3(0.048f));
     draw_depth(depth_shader, "taxi", taxi_model);
 
-    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    shadow.end_depth_capture((int) graphics->perspective_params().Width, (int) graphics->perspective_params().Height);
+    shadow.end_depth_capture();
 }
 
 glm::vec3 MainController::get_shadow_light_pos(int lamp_index, int bulb_index) const {

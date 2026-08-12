@@ -24,7 +24,7 @@ public:
 
     void begin_depth_capture(const resources::Shader *depth_shader, const glm::vec3 &light_pos,
                              float near_plane = 1.0f, float far_plane = 25.0f) const;
-    void end_depth_capture(int screen_width, int screen_height) const;
+    void end_depth_capture() const;
 
     void bind_shadow_map(const resources::Shader *shader, const std::string &uniform_name, int texture_unit) const;
 
