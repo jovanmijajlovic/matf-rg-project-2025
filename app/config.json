@@ -1,11 +1,38 @@
 {
   "resources": {
     "models": {
+      "blue-car": {
+        "path": "blue-car/blue-car.obj",
+        "flip_uvs": true
+      },
+      "lambo": {
+        "path": "lambo/lambo.obj",
+        "flip_uvs": true
+      },
+      "taxi": {
+        "path": "taxi/1399 Taxi.obj",
+        "flip_uvs": true
+      },
+      "platform": {
+        "path": "platform/platform.obj",
+        "flip_uvs": false
+      },
+      "house": {
+        "path": "house/HouseWithDriveway.obj",
+        "flip_uvs": true
+      },
+      "road": {
+        "path": "put/put.obj"
+      },
+      "streetlight": {
+        "path": "streetlight/streetlight.obj",
+        "flip_uvs": true
+      }
     }
   },
   "window": {
-    "height": 600,
-    "title": "Hello, window!",
-    "width": 800
+    "height": 900,
+    "title": "Project 25/26",
+    "width": 1800
   }
 }

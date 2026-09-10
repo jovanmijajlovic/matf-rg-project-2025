@@ -1,0 +1,13 @@
+# Blender 5.0.0 MTL File: 'None'
+# www.blender.org
+
+newmtl Material.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd -s 10 10 10 Poliigon_GrassPatchyGround_4585_BaseColor.jpg
+map_Ns -s 10 10 10 Poliigon_GrassPatchyGround_4585_Roughness.jpg
+map_Bump -s 10 10 10 -bm 1.000000 Poliigon_GrassPatchyGround_4585_Normal.png
